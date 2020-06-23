@@ -1,0 +1,50 @@
+//apply plugin: 'com.android.application'
+apply from: rootProject.file('cc-settings-2.gradle')
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        //仅在以application方式编译时才添加applicationId属性
+        if (project.ext.runAsApp) {
+            applicationId 'com.frame.myapplication'
+        }
+//        applicationId "com.frame.myapplication"
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    dataBinding{
+        enabled = true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+//    implementation 'com.github.codyer.component:core:1.0.72'
+//    annotationProcessor 'com.github.codyer.component:compiler:1.0.72'
+
+
+    addComponent 'mylibrary'
+//    按照此方式添加的依赖有以下特点：
+//
+//    方便：组件切换library和application方式编译时，只需在local.properties中进行设置，不需要修改app module中的依赖列表
+//    运行主app module时会自动将【设置为以app方式编译的组件module】从依赖列表中排除
+//    安全：避免调试时切换library和application方式修改主app中的依赖项被误提交到代码仓库，导致jenkins集成打包时功能缺失
+//    隔离：避免直接调用组件中的代码及资源
+}
